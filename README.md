@@ -10,7 +10,7 @@ The **Emotion Detection Game** is an interactive application that challenges pla
 - **Interactive Gameplay**: Match the target emotion to score points.
 - **Audio Feedback**: Includes background music and sound effects.
 - **Image Capture**: Saves images of successful expressions during gameplay.
-- **Customizable Model**: Train your own emotion detection model with provided scripts.
+- **Customizable Model**: Train your emotion detection model with the provided scripts.
 
 ## Table of Contents
 
@@ -38,8 +38,8 @@ The **Emotion Detection Game** is an interactive application that challenges pla
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your_username/emotion-detection-game.git
-cd emotion-detection-game
+git clone https://github.com/baovie4444/emotion_detection_game.git
+cd emotion_detection_game
 ```
 
 ### Create a Virtual Environment
@@ -90,11 +90,10 @@ Ensure you have the following audio files in the project directory:
 - `background.wav` - Background music during gameplay.
 - `end.wav` - Sound effect when the game ends.
 
-*Note: If these files are not provided, you can use your own audio files or comment out the audio-related code in `app.py`.*
 
 #### Dataset
 
-Prepare a dataset of facial images for training the emotion detection model:
+Prepare a dataset of facial images for training the emotion detection model, using the FER 2013 dataset from Kaggle.
 
 - Organize images into folders named after the emotions (e.g., `happy`, `sad`, `neutral`, `surprised`).
 - Place the dataset in `data/train` and `data/test` directories.
@@ -124,30 +123,26 @@ This command will open the game in your default web browser.
 ```
 emotion-detection-game/
 ├── app.py
-├── gather_landmarks.py
-├── train_model.py
-├── test_model.py
+├── trainmodel.ipynb
 ├── data/
 │   ├── train/
 │   └── test/
 ├── model/
-│   └── emotion_model.pkl
+│   └── emotion_model_100.pkl
 ├── shape_predictor_68_face_landmarks.dat
+├── haarcascade_frontalface_default.xml
 ├── requirements.txt
 ├── README.md
-└── assets/
-    ├── point.wav
-    ├── background.wav
-    └── end.wav
+├── point.wav
+├── background.wav
+└── end.wav
 ```
 
 - **`app.py`**: Main application code for the game.
-- **`gather_landmarks.py`**: Script to extract facial landmarks from images.
-- **`train_model.py`**: Script to train the emotion detection model.
-- **`test_model.py`**: Script to test the trained model on new images.
+- **`trainmodel.ipynb`**: Notebook to train the emotion detection model.
 - **`data/`**: Directory for training and testing datasets.
 - **`model/`**: Contains the saved machine learning model.
-- **`assets/`**: Contains audio files for the game.
+
 
 ## Dataset Preparation
 
@@ -155,8 +150,7 @@ To train the emotion detection model, you'll need a dataset of facial images lab
 
 ### Collect Images
 
-- Gather images representing different emotions: happy, sad, neutral, and surprised.
-- Ensure images are clear and faces are properly aligned.
+Download from https://www.kaggle.com/datasets/msambare/fer2013 then remove angry, disgust, fear emotions
 
 ### Organize Dataset
 
@@ -176,40 +170,16 @@ data/
     └── surprised/
 ```
 
-### Extract Facial Landmarks
-
-Run the `gather_landmarks.py` script to extract landmarks:
-
-```bash
-python gather_landmarks.py
-```
-
-- Update the paths in the script if necessary.
-- This will generate `train.pkl` and `test.pkl` containing the landmark data.
 
 ## Model Training
 
 ### Train the Model
 
-Use the `train_model.py` script to train the SVM classifier:
+Use the `trainmodel.ipynb` notebook to train the SVM classifier:
 
-```bash
-python train_model.py
-```
 
 - The script performs hyperparameter tuning using GridSearchCV.
-- The trained model is saved as `emotion_model.pkl` in the `model/` directory.
-
-### Test the Model
-
-Evaluate the model using the `test_model.py` script:
-
-```bash
-python test_model.py
-```
-
-- Update paths in the script to point to your test images.
-- The script displays predictions and visualizes the results.
+- The trained model is saved as `emotion_model_100.pkl` in the `model/` directory.
 
 ## Training Process and Results
 
@@ -269,12 +239,12 @@ weighted avg       0.81      0.81      0.81       913
 
 |                   | Predicted Happy | Predicted Neutral | Predicted Sad | Predicted Surprised |
 |-------------------|-----------------|-------------------|---------------|---------------------|
-| **Actual Happy**     |       242       |        12         |       8       |          6          |
-| **Actual Neutral**   |        9        |       176         |      29       |         21          |
-| **Actual Sad**       |        7        |        29         |     149       |         25          |
-| **Actual Surprised** |        6        |        13         |       9       |        172          |
+| **Actual Happy**     |       242       |        7         |       18       |          2          |
+| **Actual Neutral**   |        8        |       177        |      41       |         9          |
+| **Actual Sad**       |        14        |        38         |     149       |         9          |
+| **Actual Surprised** |        1        |        17         |       10       |        172          |
 
-*(Visualization of the confusion matrix can be added here if desired.)*
+
 
 #### Interpretation
 
@@ -287,7 +257,7 @@ weighted avg       0.81      0.81      0.81       913
 The trained model and label encoder are saved as a pickle file for use in the game application:
 
 ```python
-with open('model/emotion_model.pkl', 'wb') as f:
+with open('model/emotion_model_100.pkl', 'wb') as f:
     pickle.dump({'model': best_model, 'label_encoder': label_encoder}, f)
 ```
 
